@@ -1,7 +1,6 @@
 
 #![allow(dead_code)]
 
-
 use std::{collections::HashMap, error::Error};
 
 const BASE_URI: &str = "https://app.baseten.co";
@@ -14,28 +13,37 @@ pub struct Baseten {
 
 impl Baseten {
     pub fn new(api_key: String) -> Baseten {
-        println!("CALLED");
         Baseten { api_key }
     }
 
     pub fn get_api_key(&self) -> String {
         self.api_key.clone()
     }
-}
 
- pub async fn call_model_prompt(model_id:&String, prompt:&String, baseten_api_key:&String) -> Result<String, Box<dyn Error>> {
-    let uri = format!("{}/models/{}/predict", BASE_URI.to_string(), model_id.to_string());
-    let client = reqwest::Client::builder().build()?;
-    let mut post_body = HashMap::new();
-    post_body.insert("prompt", prompt);
-    let body = client
-    .post(uri)
-    .json(&post_body)
-    .header("Authorization", format!("Api-Key {}", &baseten_api_key))
-    .send().await;
-    let response = body.expect("Failed to execute request.");
-    let body = response.text().await;
-    Ok(body.unwrap())
+    pub async fn call_model_prompt(&self, model_id:&String, prompt:&String, opt_args:Option<HashMap<String, String>>) -> Result<String, Box<dyn Error>> {
+        let uri = format!("{}/models/{}/predict", BASE_URI.to_string(), model_id.to_string());
+        let client = reqwest::Client::builder().build()?;
+        let mut post_body = HashMap::new();
+
+        match opt_args {
+            Some(args) => {
+                for (key, value) in args {
+                    post_body.insert(key.to_string(), value);
+                }
+            },
+            None => {}
+        }
+
+        post_body.insert(String::from("prompt"), prompt.clone());
+        let body = client
+        .post(uri)
+        .json(&post_body)
+        .header("Authorization", format!("Api-Key {}", &self.api_key))
+        .send().await;
+        let response = body.expect("Failed to execute request.");
+        let body = response.text().await;
+        Ok(body.unwrap())
+    }
 }
 
 #[cfg(test)]
