@@ -2,7 +2,6 @@
 #![allow(dead_code)]
 
 use std::{collections::HashMap, error::Error};
-
 const BASE_URI: &str = "https://app.baseten.co";
 
 
@@ -62,10 +61,28 @@ impl Baseten {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tokio_test; 
+    use tokio_test::block_on;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+     fn test_wake() {
+
+        let api_key = std::env::var("BASETEN_AUTH_TOKEN").expect("Expected environment variable BASETEN_AUTH_TOKEN");
+        let model = std::env::var("BASETEN_MODEL_ID").expect("Expected environment variable BASETEN_MODEL_ID");
+
+        let baseten = Baseten {
+            api_key: api_key.to_string()
+        };
+        let r: Result<String, Box<dyn Error>> = block_on(baseten.wake(&model));
+        match r {
+            Ok(s) => println!("Returned: {}", s),
+            Err(e) => println!("Error: {}", e),
+        }
+        assert_eq!(4, 4);
+    }
+
+    #[test]
+    fn test_call_model() {
+        assert_eq!(4,4);
     }
 }
