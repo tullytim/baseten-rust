@@ -44,6 +44,19 @@ impl Baseten {
         let body = response.text().await;
         Ok(body.unwrap())
     }
+
+    pub async fn wake(&self, model_id:&String) -> Result<String, Box<dyn Error>> {
+        let uri = format!("{}/model_versions/{}/wake", BASE_URI.to_string(), model_id.to_string());
+        let client = reqwest::Client::builder().build()?;
+        let body = client
+        .post(uri)
+        //.json(&post_body)
+        .header("Authorization", format!("Api-Key {}", &self.api_key))
+        .send().await;
+        let response = body.expect("Failed to execute request.");
+        let body = response.text().await;        
+        Ok(body.unwrap())
+    }
 }
 
 #[cfg(test)]
