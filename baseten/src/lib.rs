@@ -2,6 +2,8 @@
 ///#![allow(dead_code)]
 
 use std::{collections::HashMap, error::Error};
+use serde_json::Value;
+
 /// This is going to change soon, w/ model id in the subdomain of the UI.
 const BASE_URI: &str = "https://app.baseten.co";
 
@@ -93,7 +95,6 @@ mod tests {
         };
         let r: Result<String, Box<dyn Error>> = block_on(baseten.wake(&deployment_id));
         let rv = r.expect("couldnt get Result from wake()");
-
         assert_eq!(rv, "{}"); 
     }
 
@@ -111,7 +112,15 @@ mod tests {
         opts.insert(String::from("use_refiner"), String::from("true"));
 
         let r: Result<String, Box<dyn Error>> = block_on(baseten.call_model_prompt(&model, &prompt, Some(opts)));
-        println!("Result: {:?}", r);
-        assert!(r.unwrap().len() > 10000);
+        match r {
+            Ok(s) => {
+                let json_blob: Value = serde_json::from_str(s.as_str()).expect("Failed to deserialize JSON string");
+                assert!(json_blob["model_output"]["status"] == "success")
+            },
+            Err(e) => {
+                println!("Error: {}", e);
+                assert!(1 == 0)
+            }
+        }
     }
 }
