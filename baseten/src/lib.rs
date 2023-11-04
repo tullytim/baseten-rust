@@ -94,8 +94,13 @@ mod tests {
             api_key: api_key.to_string()
         };
         let r: Result<String, Box<dyn Error>> = block_on(baseten.wake(&deployment_id));
-        let rv = r.expect("couldnt get Result from wake()");
-        assert_eq!(rv, "{}"); 
+        match r {
+            Ok(s) => assert_eq!(s, "{}"),
+            Err(e) => {
+                println!("Error: {}", e);
+                panic!("Wake failed with error");
+            }
+        }
     }
 
     #[test]
@@ -119,7 +124,7 @@ mod tests {
             },
             Err(e) => {
                 println!("Error: {}", e);
-                assert!(1 == 0)
+                panic!("Call model failed with error");
             }
         }
     }
