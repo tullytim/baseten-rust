@@ -36,3 +36,6 @@ match r {
 
 # Tests
 ``` cargo test ```
+
+# Contributing
+All contributions welcome but must have tests. Build and test instructions are above, and the most simple Rust oriented way to do things.  Feel free to ping me: tim@menlovc.com
