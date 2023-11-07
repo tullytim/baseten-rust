@@ -31,6 +31,12 @@ match r {
 }
 ```
 
+For a dedicated full working example, see https://github.com/tullytim/baseten-rust-test
+You can invoke it and see example output from Stable Diffusion XL with the following (on your Mac only):
+```
+cargo run <api key> <model id> |  jq -r '.model_output.data' | base64 -D | open -a Preview -f
+```
+
 # Building
 ```rust cargo build ```
 
