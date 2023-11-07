@@ -2,8 +2,9 @@
 This is a simple Rust-based API for http://baseten.co.  There are three functions (really there are only two API endpoints in Baseten, anyhow)
 
 ```rust
-call_model(model_id:&String, prompt:&String, opt_args:Option<HashMap<String, String>>
+call_model(model_id:&String, prompt:&String, opt_args:Option<HashMap<String, String>>)
 ```
+
 ```rust
 wake(deployment_id:&String)
 ```
